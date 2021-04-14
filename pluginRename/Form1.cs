@@ -61,22 +61,20 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(DBText)))
                         {
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
-                            if (text.TextString == textBox1.Text)
+                            if (text.TextString.Contains(textBox1.Text))
                             {
                                 tr.GetObject(id, OpenMode.ForWrite);
                                 text.TextString = textBox2.Text;
-                                break;
                             }
                         }
                         // MText
                         if (id.ObjectClass == RXObject.GetClass(typeof(MText)))
                         {
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
-                            if (text.Contents == textBox1.Text)
+                            if (text.Text.Contains(textBox1.Text))
                             {
                                 tr.GetObject(id, OpenMode.ForWrite);
                                 text.Contents = textBox2.Text;
-                                break;
                             }
                         }
                     }
