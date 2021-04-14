@@ -3,10 +3,11 @@ using System.Windows.Forms;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.Windows;
+using acad = Autodesk.AutoCAD.ApplicationServices.Application;
+using PluginRename;
 //using Autodesk.AutoCAD.Geometry;
 //using Autodesk.AutoCAD.ApplicationServices;
 //using Autodesk.AutoCAD.EditorInput;
-using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace MyAutoCADDll
 {
@@ -15,7 +16,7 @@ namespace MyAutoCADDll
         // функция инициализации (выполняется при загрузке плагина)
         public void Initialize()
         {
-            MessageBox.Show("Hello!");
+            MessageBox.Show("Плагин загружен.");
             createMyTab();
         }
 
@@ -79,7 +80,7 @@ namespace MyAutoCADDll
         public void createMyTab()
         {
             // создаем выпадающий список
-            Autodesk.Windows.RibbonCombo comboBox1 = new RibbonCombo();
+            //Autodesk.Windows.RibbonCombo comboBox1 = new RibbonCombo();
             //comboBox1.Id = "_combobox1";
 
             // создаем кнопку В чертеже
@@ -108,7 +109,7 @@ namespace MyAutoCADDll
 
             // создаем контейнер для элементов
             Autodesk.Windows.RibbonPanelSource rbPanelSource = new Autodesk.Windows.RibbonPanelSource();
-            rbPanelSource.Title = "Замена текста";
+            rbPanelSource.Title = "Замена текста в строках";
             // добавляем в контейнер элементы управления
             //rbPanelSource.Items.Add(comboBox1);
             //rbPanelSource.Items.Add(new RibbonSeparator());
@@ -131,7 +132,7 @@ namespace MyAutoCADDll
             // добавляем на ленту вкладку
             rbCtrl.Tabs.Add(rbTab);
             // делаем созданную вкладку активной ("выбранной")
-            rbTab.IsActive = true;
+            //rbTab.IsActive = true;
         }
 
 
@@ -139,7 +140,6 @@ namespace MyAutoCADDll
         public class CommandHandler_buttonInDrawing : System.Windows.Input.ICommand
         {
             public event EventHandler CanExecuteChanged;
-
             public bool CanExecute(object param)
             {
                 return true;
@@ -147,7 +147,9 @@ namespace MyAutoCADDll
 
             public void Execute(object parameter)
             {
-                MessageBox.Show("Habr1!");
+                FormMyPlugin formMyPlugin = new FormMyPlugin();
+                //formMyPlugin.Show();
+                acad.ShowModalDialog(acad.MainWindow.Handle, formMyPlugin, false);
             }
         }
 
@@ -163,7 +165,7 @@ namespace MyAutoCADDll
 
             public void Execute(object parameter)
             {
-                MessageBox.Show("Habr2!");
+                MessageBox.Show("Не реализовано.");
             }
         }
 
