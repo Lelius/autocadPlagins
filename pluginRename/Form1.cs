@@ -84,8 +84,27 @@ namespace PluginRename
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
                             if (text.Text.Contains(textBox1.Text))
                             {
+                                //Достаем значение масштабирования после /W
+                                string textWithCodes = text.Contents;
+                                string widthScale = "";
+                                if (textWithCodes.Contains("\\W"))
+                                {
+                                    widthScale = textWithCodes.Substring(textWithCodes.IndexOf('W') + 1, (textWithCodes.IndexOf(';') - (textWithCodes.IndexOf('W')) - 1));
+                                }
+                                else
+                                    widthScale = "1.0";
+
+                                //Меняем сам текст
+                                string textNew = text.Text;
+                                textNew = textNew.Replace(textBox1.Text, textBox2.Text);
+                                if (checkBoxScaleText.Checked == true)
+                                    textNew = "\\A1;{\\W" + widthScale + ";" + textNew + "}";
+                                else
+                                    textNew = "\\A1;{\\W1.0;" + textNew + "}";
+
+                                //Запись в объект
                                 tr.GetObject(id, OpenMode.ForWrite);
-                                text.Contents = textBox2.Text;
+                                text.Contents = textNew;
                             }
                         }
                     }
