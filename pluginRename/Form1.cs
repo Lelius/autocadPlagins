@@ -63,8 +63,17 @@ namespace PluginRename
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
                             if (text.TextString.Contains(textBox1.Text))
                             {
+                                //Меняем в промежуточной переменной, напрямую не работает
+                                var textOld = text.TextString;
+                                var textNew = textOld.Replace(textBox1.Text, textBox2.Text);
+                                //Подгоняем размер по длине под старый
+                                var lengthOld = textOld.Length;
+                                var lengthNew = textNew.Length;
+                                double scaleText = (double)text.WidthFactor * (double)lengthOld / (double)lengthNew;
+
                                 tr.GetObject(id, OpenMode.ForWrite);
-                                text.TextString = textBox2.Text;
+                                text.TextString = textNew;
+                                text.WidthFactor = scaleText;
                             }
                         }
                         // MText
