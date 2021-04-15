@@ -39,6 +39,7 @@ namespace PluginRename
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxScaleText = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +55,7 @@ namespace PluginRename
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.checkBoxScaleText, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -156,6 +158,20 @@ namespace PluginRename
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // checkBoxScaleText
+            // 
+            this.checkBoxScaleText.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.checkBoxScaleText.AutoSize = true;
+            this.checkBoxScaleText.Checked = true;
+            this.checkBoxScaleText.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxScaleText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkBoxScaleText.Location = new System.Drawing.Point(28, 198);
+            this.checkBoxScaleText.Name = "checkBoxScaleText";
+            this.checkBoxScaleText.Size = new System.Drawing.Size(170, 22);
+            this.checkBoxScaleText.TabIndex = 5;
+            this.checkBoxScaleText.Text = "Сохранять масштаб";
+            this.checkBoxScaleText.UseVisualStyleBackColor = true;
+            // 
             // FormMyPlugin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -185,5 +201,6 @@ namespace PluginRename
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox checkBoxScaleText;
     }
 }

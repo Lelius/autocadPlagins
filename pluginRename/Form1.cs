@@ -71,9 +71,11 @@ namespace PluginRename
                                 var lengthNew = textNew.Length;
                                 double scaleText = (double)text.WidthFactor * (double)lengthOld / (double)lengthNew;
 
+                                //Запись в объект
                                 tr.GetObject(id, OpenMode.ForWrite);
                                 text.TextString = textNew;
-                                text.WidthFactor = scaleText;
+                                if (checkBoxScaleText.Checked == true)
+                                    text.WidthFactor = scaleText;
                             }
                         }
                         // MText
