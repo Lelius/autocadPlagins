@@ -16,7 +16,6 @@ namespace MyAutoCADDll
         // функция инициализации (выполняется при загрузке плагина)
         public void Initialize()
         {
-            MessageBox.Show("Плагин загружен.");
             createMyTab();
         }
 
