@@ -16,7 +16,8 @@ namespace MyAutoCADDll
         // функция инициализации (выполняется при загрузке плагина)
         public void Initialize()
         {
-            createMyTab();
+            Autodesk.AutoCAD.ApplicationServices.Application.Idle += new EventHandler(on_ApplicationIdle);
+            //MessageBox.Show("Плагин загружен");
         }
 
 
@@ -24,6 +25,30 @@ namespace MyAutoCADDll
         public void Terminate()
         {
             MessageBox.Show("Goodbye!");
+        }
+
+
+        public void on_ApplicationIdle(object sender, EventArgs e)
+        {
+            /// ...
+            addRibbonTab();
+            /// ...
+        }
+
+
+        public void addRibbonTab()
+        {
+            /// ...
+            RibbonControl rbCtrl = ComponentManager.Ribbon;
+            if (rbCtrl != null)
+            {
+                // добавление вкладки
+
+                createMyTab();
+
+                // ...
+                Autodesk.AutoCAD.ApplicationServices.Application.Idle -= on_ApplicationIdle;
+            }
         }
 
 
