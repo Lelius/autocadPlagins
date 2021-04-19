@@ -61,11 +61,11 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(DBText)))
                         {
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
-                            if (text.TextString.Contains(textBox1.Text))
+                            if (text.TextString.Contains(textBoxOld.Text))
                             {
                                 //Меняем в промежуточной переменной, напрямую не работает
                                 var textOld = text.TextString;
-                                var textNew = textOld.Replace(textBox1.Text, textBox2.Text);
+                                var textNew = textOld.Replace(textBoxOld.Text, textBoxNew.Text);
                                 //Подгоняем размер по длине под старый
                                 var lengthOld = textOld.Length;
                                 var lengthNew = textNew.Length;
@@ -78,11 +78,13 @@ namespace PluginRename
                                     text.WidthFactor = scaleText;
                             }
                         }
+
                         // MText
+
                         if (id.ObjectClass == RXObject.GetClass(typeof(MText)))
                         {
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
-                            if (text.Text.Contains(textBox1.Text))
+                            if (text.Text.Contains(textBoxOld.Text))
                             {
                                 //Достаем значение масштабирования после /W
                                 string textWithCodes = text.Contents;
@@ -95,8 +97,18 @@ namespace PluginRename
                                     widthScale = "1.0";
 
                                 //Меняем сам текст
-                                string textNew = text.Text;
-                                textNew = textNew.Replace(textBox1.Text, textBox2.Text);
+                                string textOld = text.Text;
+                                string textNew = textOld.Replace(textBoxOld.Text, textBoxNew.Text);
+
+                                // Меняем масштаб если изменилось количество знаков
+                                float delta = 1;
+                                if (textOld.Length != textNew.Length)
+                                {
+                                    delta = (float)textOld.Length / (float)textNew.Length;
+                                }
+                                widthScale = (float.Parse(widthScale) * delta).ToString();
+
+                                //Составляем новую строку MText
                                 if (checkBoxScaleText.Checked == true)
                                     textNew = "\\A1;{\\W" + widthScale + ";" + textNew + "}";
                                 else

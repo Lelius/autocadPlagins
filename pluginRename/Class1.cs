@@ -28,54 +28,6 @@ namespace MyAutoCADDll
         }
 
 
-        // эта функция будет вызываться при выполнении в AutoCAD команды «TestCommand»
-        [CommandMethod("TestCommand")]
-        public void MyCommand()
-        {
-            MessageBox.Show("Habr!");
-        }
-
-
-        [CommandMethod("Habr_IterateThroughAllObjects_1")]
-        public void iterateThroughAllObjects()
-        {
-            // получаем текущую БД 
-            Database db = HostApplicationServices.WorkingDatabase;
-
-            // начинаем транзакцию
-            using (Transaction tr = db.TransactionManager.StartTransaction())
-            {
-                // получаем ссылку на пространство модели (ModelSpace)
-                BlockTableRecord ms = (BlockTableRecord)tr.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForRead);
-
-                // "пробегаем" по всем объектам в пространстве модели
-                foreach (ObjectId id in ms)
-                {
-                    // приводим каждый из них к типу Entity
-                    Entity entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
-
-                    // выводим в консоль слой (entity.Layer), тип (entity.GetType().ToString()) и цвет (entity.Color) каждого объекта
-                    acad.DocumentManager.MdiActiveDocument.Editor.WriteMessage(string.Format("\nLayer:{0}; Type:{1}; Color: {2},{3},{4}\n",
-                        entity.Layer, entity.GetType().ToString(), entity.Color.Red.ToString(), entity.Color.Green.ToString(), entity.Color.Blue.ToString()));
-
-                    if (entity.GetType().ToString() == "Autodesk.AutoCAD.DatabaseServices.MText")
-                    {
-                        MText text = (MText)tr.GetObject(id, OpenMode.ForRead);
-                        acad.DocumentManager.MdiActiveDocument.Editor.WriteMessage(text.getMTextWithFieldCodes().ToString());
-                        acad.DocumentManager.MdiActiveDocument.Editor.WriteMessage(text.Text);
-                    }
-                    if (entity.GetType().ToString() == "Autodesk.AutoCAD.DatabaseServices.DBText")
-                    {
-                        DBText text = (DBText)tr.GetObject(id, OpenMode.ForRead);
-                        acad.DocumentManager.MdiActiveDocument.Editor.WriteMessage(text.getTextWithFieldCodes().ToString());
-                    }
-                }
-
-                tr.Commit();
-            }
-        }
-
-
         [CommandMethod("CreateMyTab")]
         public void createMyTab()
         {
