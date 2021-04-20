@@ -54,6 +54,7 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(DBText)))
                         {
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
+                            var heightText = text.Height;
                             if (text.TextString.Contains(textBoxOld.Text))
                             {
                                 //Меняем в промежуточной переменной, напрямую не работает
@@ -69,6 +70,7 @@ namespace PluginRename
                                 text.TextString = textNew;
                                 if (checkBoxScaleText.Checked == true)
                                     text.WidthFactor = scaleText;
+                                text.Height = heightText;
                             }
                         }
 
@@ -77,6 +79,7 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(MText)))
                         {
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
+                            var heightText = text.Height;
                             if (text.Text.Contains(textBoxOld.Text))
                             {
                                 //Достаем значение масштабирования после /W
@@ -110,6 +113,7 @@ namespace PluginRename
                                 //Запись в объект
                                 tr.GetObject(id, OpenMode.ForWrite);
                                 text.Contents = textNew;
+                                text.Height = heightText;
                             }
                         }
                     }

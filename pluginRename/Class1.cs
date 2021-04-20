@@ -30,23 +30,19 @@ namespace MyAutoCADDll
 
         public void on_ApplicationIdle(object sender, EventArgs e)
         {
-            /// ...
             addRibbonTab();
-            /// ...
         }
 
 
         public void addRibbonTab()
         {
-            /// ...
             RibbonControl rbCtrl = ComponentManager.Ribbon;
             if (rbCtrl != null)
             {
-                // добавление вкладки
+                // Добавление вкладки
 
                 createMyTab();
 
-                // ...
                 Autodesk.AutoCAD.ApplicationServices.Application.Idle -= on_ApplicationIdle;
             }
         }
