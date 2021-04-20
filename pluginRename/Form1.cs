@@ -9,31 +9,49 @@ namespace PluginRename
 {
     public partial class FormMyPlugin : Form
     {
+        enum ReplaseWorkMode { SingleMode, MultiplieMode };
+        byte flagSingleOrMultiplieWork;      // SingleMode - работа в текущем чертеже,
+                                             // MultiplieMode - работа по таблице Excel в заданной папке
+        string fileNameXls;
+        ToolTip fileNameXlsToolTip;
+
+        // Инициализация
         public FormMyPlugin()
         {
             InitializeComponent();
+
+            flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+            fileNameXls = "No file";
+            fileNameXlsToolTip = new ToolTip();
+
+            createToolTip(labelSelectXlsFile, fileNameXls);
         }
 
+
+        // Событие кнопки отмены
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
+
+        // Событие кнопки старта работы
         private void buttonStart_Click(object sender, EventArgs e)
         {
             replaceForMyText();
         }
 
+
+        // Запуск работы, закрытие формы по окончанию, перерисовка окна Autocad
         public void replaceForMyText()
         {
-            //MessageBox.Show(this.textBox1.Text);
             iterateThroughAllObjects();
             this.Close();
             acad.DocumentManager.MdiActiveDocument.Editor.Regen();
-            //utodesk.AutoCAD.ApplicationServices.Document doc = acad.DocumentManager.MdiActiveDocument;
-            //doc.SendStringToExecute("REGENALL ", true, false, true);
         }
 
+
+        // Основная работа по замене строки
         public void iterateThroughAllObjects()
         {
             // получаем текущую БД 
@@ -55,11 +73,11 @@ namespace PluginRename
                         {
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
                             var heightText = text.Height;
-                            if (text.TextString.Contains(textBoxOld.Text))
+                            if (text.TextString.Contains(textBoxOldText.Text))
                             {
                                 //Меняем в промежуточной переменной, напрямую не работает
                                 var textOld = text.TextString;
-                                var textNew = textOld.Replace(textBoxOld.Text, textBoxNew.Text);
+                                var textNew = textOld.Replace(textBoxOldText.Text, textBoxNewText.Text);
                                 //Подгоняем размер по длине под старый
                                 var lengthOld = textOld.Length;
                                 var lengthNew = textNew.Length;
@@ -80,7 +98,7 @@ namespace PluginRename
                         {
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
                             var heightText = text.Height;
-                            if (text.Text.Contains(textBoxOld.Text))
+                            if (text.Text.Contains(textBoxOldText.Text))
                             {
                                 //Достаем значение масштабирования после /W
                                 string textWithCodes = text.Contents;
@@ -94,7 +112,7 @@ namespace PluginRename
 
                                 //Меняем сам текст
                                 string textOld = text.Text;
-                                string textNew = textOld.Replace(textBoxOld.Text, textBoxNew.Text);
+                                string textNew = textOld.Replace(textBoxOldText.Text, textBoxNewText.Text);
 
                                 // Меняем масштаб если изменилось количество знаков
                                 float delta = 1;
@@ -121,6 +139,44 @@ namespace PluginRename
                     tr.Commit();
                 }
             }
+        }
+
+
+        // Диалог выбора файла таблицы Excel
+        private void buttonSelectXlsFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Выберите файл таблицы соответствий";
+            fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            fileDialog.Filter = "Файлы Excel (*.xls, *.xlsx)|*.xls;*.xlsx";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileNameXls = fileDialog.FileName;
+            }
+            labelSelectXlsFile.Text = fileNameXls;
+            createToolTip(labelSelectXlsFile, fileNameXls);
+
+            flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+        }
+
+
+        // Очистка данных о файле таблицы Excel
+        private void buttonCancelXlsFile_Click(object sender, EventArgs e)
+        {
+            fileNameXls = "No file";
+            labelSelectXlsFile.Text = fileNameXls;
+            createToolTip(labelSelectXlsFile, fileNameXls);
+
+            flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+        }
+
+
+        // Создание подсказки о файле таблицы Excel (если путь к нему очень длинный)
+        private void createToolTip(Control controlForToolTip, string toolTipText)
+        {
+            fileNameXlsToolTip.Active = true;
+            fileNameXlsToolTip.SetToolTip(controlForToolTip, toolTipText);
+            fileNameXlsToolTip.IsBalloon = true;
         }
     }
 }
