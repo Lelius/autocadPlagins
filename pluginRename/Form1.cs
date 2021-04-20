@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.Windows;
+using ExcelDataReader;
+using System.Data;
 using acad = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace PluginRename
@@ -11,7 +14,7 @@ namespace PluginRename
     {
         enum ReplaseWorkMode { SingleMode, MultiplieMode };
         byte flagSingleOrMultiplieWork;      // SingleMode - работа в текущем чертеже,
-                                             // MultiplieMode - работа по таблице Excel в заданной папке
+                                             // MultiplieMode - работа по таблице Excel
         string fileNameXls;
         ToolTip fileNameXlsToolTip;
 
@@ -45,7 +48,16 @@ namespace PluginRename
         // Запуск работы, закрытие формы по окончанию, перерисовка окна Autocad
         public void replaceForMyText()
         {
-            iterateThroughAllObjects();
+            if (flagSingleOrMultiplieWork == (byte)ReplaseWorkMode.SingleMode)
+            {
+                iterateThroughAllObjects();
+            }
+            else if (flagSingleOrMultiplieWork == (byte)ReplaseWorkMode.MultiplieMode)
+            {
+                workWithTableXls();
+            }
+            else
+                MessageBox.Show("Что-то пошло не так. Ошибка в выборе режима работы.");
             this.Close();
             acad.DocumentManager.MdiActiveDocument.Editor.Regen();
         }
@@ -142,13 +154,55 @@ namespace PluginRename
         }
 
 
+        // Основная работа по замене строки по таблице .xls(x)
+        public void workWithTableXls()
+        {
+            using (var stream = File.Open(fileNameXls, FileMode.Open, FileAccess.Read))
+            {
+                // Auto-detect format, supports:
+                //  - Binary Excel files (2.0-2003 format; *.xls)
+                //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    // Choose one of either 1 or 2:
+
+                    // 1. Use the reader methods
+                    do
+                    {
+                        while (reader.Read())
+                        {
+                            // reader.GetDouble(0);
+                        }
+                    } while (reader.NextResult());
+
+                    // 2. Use the AsDataSet extension method
+                    var results = reader.AsDataSet();
+
+                    // The result of each spreadsheet is in result.Tables
+
+                    foreach (System.Data.DataTable table in results.Tables)
+                    {
+                        foreach (DataRow row in table.Rows)
+                        {
+                            foreach (System.Data.DataColumn column in table.Columns)
+                            {
+                                MessageBox.Show(row[column].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
+
         // Диалог выбора файла таблицы Excel
         private void buttonSelectXlsFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Title = "Выберите файл таблицы соответствий";
             fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            fileDialog.Filter = "Файлы Excel (*.xls, *.xlsx)|*.xls;*.xlsx";
+            fileDialog.Filter = "Файлы Excel (*.xls, *.xlsx, *.xlsb)|*.xls;*.xlsx;*.xlsb";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 fileNameXls = fileDialog.FileName;
