@@ -50,7 +50,7 @@ namespace PluginRename
         {
             if (flagSingleOrMultiplieWork == (byte)ReplaseWorkMode.SingleMode)
             {
-                iterateThroughAllObjects();
+                iterateThroughAllObjects(textBoxOldText.Text, textBoxNewText.Text);
             }
             else if (flagSingleOrMultiplieWork == (byte)ReplaseWorkMode.MultiplieMode)
             {
@@ -64,7 +64,7 @@ namespace PluginRename
 
 
         // Основная работа по замене строки
-        public void iterateThroughAllObjects()
+        public void iterateThroughAllObjects(string sampleOldText, string sampleNewText)
         {
             // получаем текущую БД 
             Database db = HostApplicationServices.WorkingDatabase;
@@ -84,12 +84,13 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(DBText)))
                         {
                             var text = (DBText)tr.GetObject(id, OpenMode.ForRead);
+                            // Высоту текста потом вернем, почему-то меняется
                             var heightText = text.Height;
-                            if (text.TextString.Contains(textBoxOldText.Text))
+                            if (text.TextString.Contains(sampleOldText))
                             {
                                 //Меняем в промежуточной переменной, напрямую не работает
                                 var textOld = text.TextString;
-                                var textNew = textOld.Replace(textBoxOldText.Text, textBoxNewText.Text);
+                                var textNew = textOld.Replace(sampleOldText, sampleNewText);
                                 //Подгоняем размер по длине под старый
                                 var lengthOld = textOld.Length;
                                 var lengthNew = textNew.Length;
@@ -109,8 +110,9 @@ namespace PluginRename
                         if (id.ObjectClass == RXObject.GetClass(typeof(MText)))
                         {
                             var text = (MText)tr.GetObject(id, OpenMode.ForRead);
+                            // Высоту текста потом вернем, почему-то меняется
                             var heightText = text.Height;
-                            if (text.Text.Contains(textBoxOldText.Text))
+                            if (text.Text.Contains(sampleOldText))
                             {
                                 //Достаем значение масштабирования после /W
                                 string textWithCodes = text.Contents;
@@ -124,7 +126,7 @@ namespace PluginRename
 
                                 //Меняем сам текст
                                 string textOld = text.Text;
-                                string textNew = textOld.Replace(textBoxOldText.Text, textBoxNewText.Text);
+                                string textNew = textOld.Replace(sampleOldText, sampleNewText);
 
                                 // Меняем масштаб если изменилось количество знаков
                                 float delta = 1;
@@ -192,10 +194,7 @@ namespace PluginRename
                             {
                                 foreach (DataRow row in table.Rows)
                                 {
-                                    for (int i = 0; i < 2; i++)
-                                    {
-                                        MessageBox.Show(row[i].ToString(), "Работа в таблице.");
-                                    }
+                                    iterateThroughAllObjects(row[0].ToString(), row[1].ToString());
                                 }
                             }
                             else
