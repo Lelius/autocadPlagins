@@ -270,9 +270,11 @@ namespace PluginRename
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(682, 403);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(700, 450);
             this.Name = "FormMyPlugin";
             this.Text = "Замена текста в строках";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormMyPlugin_KeyDown);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);

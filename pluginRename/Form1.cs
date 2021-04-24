@@ -180,16 +180,30 @@ namespace PluginRename
 
                     // The result of each spreadsheet is in result.Tables
 
-                    foreach (System.Data.DataTable table in results.Tables)
+                    // Работаем только с одной таблицей
+                    if (results.Tables.Count == 1)
                     {
-                        foreach (DataRow row in table.Rows)
+                        foreach (System.Data.DataTable table in results.Tables)
                         {
-                            foreach (System.Data.DataColumn column in table.Columns)
+                            foreach (DataRow row in table.Rows)
                             {
-                                MessageBox.Show(row[column].ToString());
+                                // Колонок в таблице должно быть не меньше двух.
+                                if (table.Columns.Count >= 2)
+                                {
+                                    if (table.Columns.Count > 2)
+                                        MessageBox.Show("Из таблицы будут использоваться только первые две колонки.", "Предупреждение.");
+                                    foreach (System.Data.DataColumn column in table.Columns)
+                                    {
+                                        MessageBox.Show(row[column].ToString());
+                                    }
+                                }
+                                else
+                                    MessageBox.Show("В таблице меньше двух колонок.", "Ошибка!");
                             }
                         }
                     }
+                    else
+                        MessageBox.Show("В файле .xls(x) должна быть одна твблица.", "Ошибка!");
                 }
             }
             
@@ -231,6 +245,16 @@ namespace PluginRename
             fileNameXlsToolTip.Active = true;
             fileNameXlsToolTip.SetToolTip(controlForToolTip, toolTipText);
             fileNameXlsToolTip.IsBalloon = true;
+        }
+
+
+        // Событие нажатия клавиши
+        private void FormMyPlugin_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }
