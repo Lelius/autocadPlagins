@@ -185,21 +185,21 @@ namespace PluginRename
                     {
                         foreach (System.Data.DataTable table in results.Tables)
                         {
-                            foreach (DataRow row in table.Rows)
+                            if (table.Columns.Count > 2)
+                                MessageBox.Show("Из таблицы будут использоваться только первые две колонки.", "Предупреждение.");
+                            // Колонок в таблице должно быть не меньше двух.
+                            if (table.Columns.Count >= 2)
                             {
-                                // Колонок в таблице должно быть не меньше двух.
-                                if (table.Columns.Count >= 2)
+                                foreach (DataRow row in table.Rows)
                                 {
-                                    if (table.Columns.Count > 2)
-                                        MessageBox.Show("Из таблицы будут использоваться только первые две колонки.", "Предупреждение.");
-                                    foreach (System.Data.DataColumn column in table.Columns)
+                                    for (int i = 0; i < 2; i++)
                                     {
-                                        MessageBox.Show(row[column].ToString());
+                                        MessageBox.Show(row[i].ToString(), "Работа в таблице.");
                                     }
                                 }
-                                else
-                                    MessageBox.Show("В таблице меньше двух колонок.", "Ошибка!");
                             }
+                            else
+                                MessageBox.Show("В таблице меньше двух колонок.", "Ошибка!");
                         }
                     }
                     else
