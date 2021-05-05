@@ -51,46 +51,27 @@ namespace MyAutoCADDll
         [CommandMethod("CreateMyTab")]
         public void createMyTab()
         {
-            // создаем выпадающий список
-            //Autodesk.Windows.RibbonCombo comboBox1 = new RibbonCombo();
-            //comboBox1.Id = "_combobox1";
-
             // создаем кнопку В чертеже
             Autodesk.Windows.RibbonButton buttonInDrawing = new Autodesk.Windows.RibbonButton();
             buttonInDrawing.Name = "В чертеже";
             buttonInDrawing.Text = "В чертеже";
             buttonInDrawing.Id = "_buttonChangeTextInDrawing";
             buttonInDrawing.ShowText = true;
+            buttonInDrawing.Size = RibbonItemSize.Large;
             //buttonInDrawing.Orientation = 
             // привязываем к кнопке обработчик нажатия
             buttonInDrawing.CommandHandler = new CommandHandler_buttonInDrawing();
 
-            // создаем кнопку В имени файла
-            Autodesk.Windows.RibbonButton buttonInFileName = new Autodesk.Windows.RibbonButton();
-            buttonInFileName.Name = "В имени файла";
-            buttonInFileName.Text = "В имени файла";
-            buttonInFileName.Id = "_buttonChangeTextInFileName";
-            buttonInFileName.ShowText = true;
-            // привязываем к кнопке обработчик нажатия
-            buttonInFileName.CommandHandler = new CommandHandler_buttonInFileName();
-
-            Autodesk.Windows.RibbonFlowPanel flowPanel = new RibbonFlowPanel();
-            flowPanel.Items.Add(buttonInDrawing);
-            flowPanel.Items.Add(buttonInFileName);
-            flowPanel.Id = "_flowPanel";
-
             // создаем контейнер для элементов
-            Autodesk.Windows.RibbonPanelSource rbPanelSource = new Autodesk.Windows.RibbonPanelSource();
-            rbPanelSource.Title = "Замена текста в строках";
-            // добавляем в контейнер элементы управления
-            //rbPanelSource.Items.Add(comboBox1);
-            //rbPanelSource.Items.Add(new RibbonSeparator());
-            rbPanelSource.Items.Add(flowPanel);
+            Autodesk.Windows.RibbonPanelSource pS = new Autodesk.Windows.RibbonPanelSource();
+            pS.Items.Add(buttonInDrawing);
+            pS.Id = "_panelSource";
+            pS.Title = "Замена текста в строках";
 
             // создаем панель
             RibbonPanel rbPanel = new RibbonPanel();
             // добавляем на панель контейнер для элементов
-            rbPanel.Source = rbPanelSource;
+            rbPanel.Source = pS;
 
             // создаем вкладку
             RibbonTab rbTab = new RibbonTab();
@@ -124,23 +105,5 @@ namespace MyAutoCADDll
                 acad.ShowModalDialog(acad.MainWindow.Handle, formMyPlugin, false);
             }
         }
-
-        // обработчик нажатия кнопки В имени файла
-        public class CommandHandler_buttonInFileName : System.Windows.Input.ICommand
-        {
-            public event EventHandler CanExecuteChanged;
-
-            public bool CanExecute(object param)
-            {
-                return true;
-            }
-
-            public void Execute(object parameter)
-            {
-                MessageBox.Show("Не реализовано.");
-            }
-        }
-
-
     }
 }
