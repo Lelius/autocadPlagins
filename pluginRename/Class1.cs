@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using System.Reflection;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.Windows;
@@ -53,25 +55,31 @@ namespace MyAutoCADDll
         {
             // создаем кнопку В чертеже
             Autodesk.Windows.RibbonButton buttonInDrawing = new Autodesk.Windows.RibbonButton();
-            buttonInDrawing.Name = "В чертеже";
-            buttonInDrawing.Text = "В чертеже";
+            buttonInDrawing.Name = "Замена";
+            buttonInDrawing.Text = "Замена";
             buttonInDrawing.Id = "_buttonChangeTextInDrawing";
             buttonInDrawing.ShowText = true;
             buttonInDrawing.Size = RibbonItemSize.Large;
+            buttonInDrawing.Orientation = System.Windows.Controls.Orientation.Horizontal;
+            buttonInDrawing.LargeImage = getBitmap("button_my_plugin_32.png");
+            buttonInDrawing.ShowImage = true;
             //buttonInDrawing.Orientation = 
             // привязываем к кнопке обработчик нажатия
             buttonInDrawing.CommandHandler = new CommandHandler_buttonInDrawing();
 
+            RibbonRowPanel rowPanel = new RibbonRowPanel();
+            rowPanel.Items.Add(buttonInDrawing);
+
             // создаем контейнер для элементов
-            Autodesk.Windows.RibbonPanelSource pS = new Autodesk.Windows.RibbonPanelSource();
-            pS.Items.Add(buttonInDrawing);
-            pS.Id = "_panelSource";
-            pS.Title = "Замена текста в строках";
+            Autodesk.Windows.RibbonPanelSource panelSource = new Autodesk.Windows.RibbonPanelSource();
+            panelSource.Items.Add(rowPanel);
+            panelSource.Id = "_panelSource";
+            panelSource.Title = "Текст в чертежах";
 
             // создаем панель
             RibbonPanel rbPanel = new RibbonPanel();
             // добавляем на панель контейнер для элементов
-            rbPanel.Source = pS;
+            rbPanel.Source = panelSource;
 
             // создаем вкладку
             RibbonTab rbTab = new RibbonTab();
@@ -104,6 +112,23 @@ namespace MyAutoCADDll
                 //formMyPlugin.Show();
                 acad.ShowModalDialog(acad.MainWindow.Handle, formMyPlugin, false);
             }
+        }
+
+
+        BitmapImage getBitmap(string fileName)
+
+        {
+
+            BitmapImage bmp = new BitmapImage();
+            // BitmapImage.UriSource must be in a BeginInit/EndInit block.             
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(string.Format(
+              "pack://application:,,,/{0};component/Resources/{1}",
+              Assembly.GetExecutingAssembly().GetName().Name,
+              fileName));
+            bmp.EndInit();
+
+            return bmp;
         }
     }
 }
