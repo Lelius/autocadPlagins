@@ -223,7 +223,10 @@ namespace PluginRename
             labelSelectXlsFile.Text = fileNameXls;
             createToolTip(labelSelectXlsFile, fileNameXls);
 
-            flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+            if (fileNameXls != "No file")
+            {
+                flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+            }
         }
 
 
