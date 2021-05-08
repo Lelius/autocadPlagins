@@ -251,6 +251,8 @@ namespace PluginRename
             if (fileNameXls != "No file")
             {
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+                textBoxOldText.Enabled = false;
+                textBoxNewText.Enabled = false;
             }
 
             // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
@@ -267,6 +269,8 @@ namespace PluginRename
             createToolTip(labelSelectXlsFile, fileNameXls);
 
             flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+            textBoxOldText.Enabled = true;
+            textBoxNewText.Enabled = true;
 
             // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
             // во временном файле
