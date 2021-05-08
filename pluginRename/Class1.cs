@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Reflection;
+using System.IO;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.Windows;
@@ -15,18 +16,38 @@ namespace MyAutoCADDll
 {
     public class Commands : IExtensionApplication
     {
+        string configTempFileName = "configFileNameXls.tmp";
+        string fileNameXls = "No file";
+
         // функция инициализации (выполняется при загрузке плагина)
         public void Initialize()
         {
             Autodesk.AutoCAD.ApplicationServices.Application.Idle += new EventHandler(on_ApplicationIdle);
             //MessageBox.Show("Плагин загружен");
+
+            // инициализируем временный файл для храненния пути к файлу таблицы Excel
+            // (и возможно других настроек в будущем)
+            if (File.Exists(Path.GetTempPath() + configTempFileName))
+            {
+                File.Delete(Path.GetTempPath() + configTempFileName);
+            }
+
+            using (var stream = File.Open(Path.GetTempPath() + configTempFileName, FileMode.Create, FileAccess.Write))
+            {
+                StreamWriter output = new StreamWriter(stream);
+                output.Write(fileNameXls);
+                output.Close();
+            }
         }
 
 
         // функция, выполняемая при выгрузке плагина
         public void Terminate()
         {
-            MessageBox.Show("Goodbye!");
+            if (File.Exists(Path.GetTempPath() + configTempFileName))
+            {
+                File.Delete(Path.GetTempPath() + configTempFileName);
+            }
         }
 
 

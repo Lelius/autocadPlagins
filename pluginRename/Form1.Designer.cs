@@ -133,26 +133,28 @@ namespace PluginRename
             // 
             this.buttonStartReplace.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.buttonStartReplace.AutoSize = true;
+            this.buttonStartReplace.BackColor = System.Drawing.Color.Honeydew;
             this.buttonStartReplace.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonStartReplace.Location = new System.Drawing.Point(50, 30);
             this.buttonStartReplace.Name = "buttonStartReplace";
             this.buttonStartReplace.Size = new System.Drawing.Size(75, 30);
             this.buttonStartReplace.TabIndex = 0;
             this.buttonStartReplace.Text = "Старт";
-            this.buttonStartReplace.UseVisualStyleBackColor = true;
+            this.buttonStartReplace.UseVisualStyleBackColor = false;
             this.buttonStartReplace.Click += new System.EventHandler(this.buttonStart_Click);
             // 
             // buttonCancelReplace
             // 
             this.buttonCancelReplace.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.buttonCancelReplace.AutoSize = true;
+            this.buttonCancelReplace.BackColor = System.Drawing.Color.MistyRose;
             this.buttonCancelReplace.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonCancelReplace.Location = new System.Drawing.Point(220, 30);
             this.buttonCancelReplace.Name = "buttonCancelReplace";
             this.buttonCancelReplace.Size = new System.Drawing.Size(84, 30);
             this.buttonCancelReplace.TabIndex = 1;
             this.buttonCancelReplace.Text = "Отмена";
-            this.buttonCancelReplace.UseVisualStyleBackColor = true;
+            this.buttonCancelReplace.UseVisualStyleBackColor = false;
             this.buttonCancelReplace.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // checkBoxScaleText

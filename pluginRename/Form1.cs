@@ -18,16 +18,32 @@ namespace PluginRename
         string fileNameXls;
         ToolTip fileNameXlsToolTip;
 
+        int counterReplaceObjects;
+
+        string configTempFileName = "configFileNameXls.tmp";
+
         // Инициализация
         public FormMyPlugin()
         {
             InitializeComponent();
 
-            flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
-            fileNameXls = "No file";
-            fileNameXlsToolTip = new ToolTip();
+            // загружаем путь к файлу таблице Excel для текущей сессии работы в Autocad
+            // из временного файла
+            fileNameXls = loadFileNameXls();
+            labelSelectXlsFile.Text = fileNameXls;
 
+            if (fileNameXls == "No file")
+            {
+                flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+            }
+            else
+            {
+                flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+            }
+            fileNameXlsToolTip = new ToolTip();
             createToolTip(labelSelectXlsFile, fileNameXls);
+
+            counterReplaceObjects = 0;          //счетчик изменённых объектов
         }
 
 
@@ -48,6 +64,7 @@ namespace PluginRename
         // Запуск работы, закрытие формы по окончанию, перерисовка окна Autocad
         public void replaceForMyText()
         {
+            counterReplaceObjects = 0;
             if (flagSingleOrMultiplieWork == (byte)ReplaseWorkMode.SingleMode)
             {
                 iterateThroughAllObjects(textBoxOldText.Text, textBoxNewText.Text);
@@ -57,9 +74,13 @@ namespace PluginRename
                 workWithTableXls();
             }
             else
+            {
                 MessageBox.Show("Что-то пошло не так. Ошибка в выборе режима работы.");
+            }
+
             this.Close();
             acad.DocumentManager.MdiActiveDocument.Editor.Regen();
+            MessageBox.Show("Изменено " + counterReplaceObjects + " объектов.", "Результаты.");
         }
 
 
@@ -102,6 +123,8 @@ namespace PluginRename
                                 if (checkBoxScaleText.Checked == true)
                                     text.WidthFactor = scaleText;
                                 text.Height = heightText;
+
+                                counterReplaceObjects++;
                             }
                         }
 
@@ -146,6 +169,8 @@ namespace PluginRename
                                 tr.GetObject(id, OpenMode.ForWrite);
                                 text.Contents = textNew;
                                 text.Height = heightText;
+
+                                counterReplaceObjects++;
                             }
                         }
                     }
@@ -227,6 +252,10 @@ namespace PluginRename
             {
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
             }
+
+            // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
+            // во временном файле
+            saveFileNameXls(fileNameXls);
         }
 
 
@@ -238,6 +267,10 @@ namespace PluginRename
             createToolTip(labelSelectXlsFile, fileNameXls);
 
             flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+
+            // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
+            // во временном файле
+            saveFileNameXls(fileNameXls);
         }
 
 
@@ -257,6 +290,44 @@ namespace PluginRename
             {
                 this.Close();
             }
+        }
+
+
+        // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
+        private void saveFileNameXls(string text)
+        {
+            if (File.Exists(Path.GetTempPath() + configTempFileName))
+            {
+                File.Delete(Path.GetTempPath() + configTempFileName);
+            }
+
+            using (var stream = File.Open(Path.GetTempPath() + configTempFileName, FileMode.Create, FileAccess.Write))
+            {
+                StreamWriter output = new StreamWriter(stream);
+                output.Write(text);
+                output.Close();
+            }
+        }
+
+
+        // загружаем путь к файлу таблице Excel для текущей сессии работы в Autocad
+        private string loadFileNameXls()
+        {
+            string text;
+            if (File.Exists(Path.GetTempPath() + configTempFileName))
+            {
+                using (var stream = File.Open(Path.GetTempPath() + configTempFileName, FileMode.Open, FileAccess.Read))
+                {
+                    StreamReader output = new StreamReader(stream);
+                    text = output.ReadToEnd();
+                    output.Close();
+                }
+            }
+            else
+            {
+                text = "No file";
+            }
+            return text;
         }
     }
 }
