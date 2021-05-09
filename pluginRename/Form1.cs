@@ -39,6 +39,8 @@ namespace PluginRename
             else
             {
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
+                textBoxOldText.Enabled = false;
+                textBoxNewText.Enabled = false;
             }
             fileNameXlsToolTip = new ToolTip();
             createToolTip(labelSelectXlsFile, fileNameXls);
