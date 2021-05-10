@@ -40,12 +40,16 @@ namespace PluginRename
             if (fileNameXls == "No file")
             {
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
+                labelSelectXlsFile.BackColor = DefaultBackColor;
+                labelSelectXlsFile.BorderStyle = BorderStyle.None;
             }
             else
             {
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
                 textBoxOldText.Enabled = false;
                 textBoxNewText.Enabled = false;
+                labelSelectXlsFile.BackColor = System.Drawing.Color.White;
+                labelSelectXlsFile.BorderStyle = BorderStyle.FixedSingle;
             }
             textFormToolTip = new ToolTip();
             createToolTip(labelSelectXlsFile, fileNameXls);
@@ -84,12 +88,13 @@ namespace PluginRename
             }
             else
             {
-                MessageBox.Show("Что-то пошло не так. Ошибка в выборе режима работы.");
+                MessageBox.Show("Что-то пошло не так. Ошибка в выборе режима работы.\n" +
+                    "Вы не должны этого видеть. Программист лох.", "Ошибка!", MessageBoxButtons.OK);
             }
 
             this.Close();
             acad.DocumentManager.MdiActiveDocument.Editor.Regen();
-            MessageBox.Show("Изменено " + counterReplaceObjects + " объектов.", "Результаты.");
+            MessageBox.Show("Изменено " + counterReplaceObjects + " объектов.", "Результаты.", MessageBoxButtons.OK);
         }
 
 
@@ -244,7 +249,7 @@ namespace PluginRename
             }
             catch (IOException e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.Message, "Ошибка!", MessageBoxButtons.OK);
             }
         }
 
@@ -268,6 +273,8 @@ namespace PluginRename
                 flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.MultiplieMode;
                 textBoxOldText.Enabled = false;
                 textBoxNewText.Enabled = false;
+                labelSelectXlsFile.BackColor = System.Drawing.Color.White;
+                labelSelectXlsFile.BorderStyle = BorderStyle.FixedSingle;
             }
 
             // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
@@ -286,6 +293,8 @@ namespace PluginRename
             flagSingleOrMultiplieWork = (byte)ReplaseWorkMode.SingleMode;
             textBoxOldText.Enabled = true;
             textBoxNewText.Enabled = true;
+            labelSelectXlsFile.BackColor = DefaultBackColor;
+            labelSelectXlsFile.BorderStyle = BorderStyle.None;
 
             // сохраняем путь к файлу таблице Excel для текущей сессии работы в Autocad
             // во временном файле

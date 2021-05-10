@@ -244,6 +244,7 @@ namespace PluginRename
             // 
             this.labelSelectXlsFile.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelSelectXlsFile.AutoSize = true;
+            this.labelSelectXlsFile.BackColor = System.Drawing.SystemColors.Control;
             this.labelSelectXlsFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelSelectXlsFile.Location = new System.Drawing.Point(150, 58);
             this.labelSelectXlsFile.Name = "labelSelectXlsFile";
