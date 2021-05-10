@@ -16,11 +16,16 @@ namespace PluginRename
         byte flagSingleOrMultiplieWork;      // SingleMode - работа в текущем чертеже,
                                              // MultiplieMode - работа по таблице Excel
         string fileNameXls;
-        ToolTip fileNameXlsToolTip;
+        ToolTip textFormToolTip;
 
         int counterReplaceObjects;
 
         string configTempFileName = "configFileNameXls.tmp";
+
+        string textToolTipLabelXls = "Одна таблица, созданная в Excel." +
+                                     "\nНе менее двух столбцов: старый текст - новый текст.";
+
+        string textToolTipCheckBoxScaleText = "Длина получаемой строки текста равна длине заменяемой строки.";
 
         // Инициализация
         public FormMyPlugin()
@@ -42,8 +47,10 @@ namespace PluginRename
                 textBoxOldText.Enabled = false;
                 textBoxNewText.Enabled = false;
             }
-            fileNameXlsToolTip = new ToolTip();
+            textFormToolTip = new ToolTip();
             createToolTip(labelSelectXlsFile, fileNameXls);
+            createToolTip(labelXls, textToolTipLabelXls);
+            createToolTip(checkBoxScaleText, textToolTipCheckBoxScaleText);
 
             counterReplaceObjects = 0;          //счетчик изменённых объектов
         }
@@ -186,53 +193,59 @@ namespace PluginRename
         // Основная работа по замене строки по таблице .xls(x)
         public void workWithTableXls()
         {
-            using (var stream = File.Open(fileNameXls, FileMode.Open, FileAccess.Read))
+            try
             {
-                // Auto-detect format, supports:
-                //  - Binary Excel files (2.0-2003 format; *.xls)
-                //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                using (var stream = File.Open(fileNameXls, FileMode.Open, FileAccess.Read))
                 {
-                    // Choose one of either 1 or 2:
-
-                    // 1. Use the reader methods
-                    do
+                    // Auto-detect format, supports:
+                    //  - Binary Excel files (2.0-2003 format; *.xls)
+                    //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
-                        while (reader.Read())
+                        // Choose one of either 1 or 2:
+
+                        // 1. Use the reader methods
+                        do
                         {
-                            // reader.GetDouble(0);
-                        }
-                    } while (reader.NextResult());
-
-                    // 2. Use the AsDataSet extension method
-                    var results = reader.AsDataSet();
-
-                    // The result of each spreadsheet is in result.Tables
-
-                    // Работаем только с одной таблицей
-                    if (results.Tables.Count == 1)
-                    {
-                        foreach (System.Data.DataTable table in results.Tables)
-                        {
-                            if (table.Columns.Count > 2)
-                                MessageBox.Show("Из таблицы будут использоваться только первые две колонки.", "Предупреждение.");
-                            // Колонок в таблице должно быть не меньше двух.
-                            if (table.Columns.Count >= 2)
+                            while (reader.Read())
                             {
-                                foreach (DataRow row in table.Rows)
-                                {
-                                    iterateThroughAllObjects(row[0].ToString(), row[1].ToString());
-                                }
+                                // reader.GetDouble(0);
                             }
-                            else
-                                MessageBox.Show("В таблице меньше двух колонок.", "Ошибка!");
+                        } while (reader.NextResult());
+
+                        // 2. Use the AsDataSet extension method
+                        var results = reader.AsDataSet();
+
+                        // The result of each spreadsheet is in result.Tables
+
+                        // Работаем только с одной таблицей
+                        if (results.Tables.Count == 1)
+                        {
+                            foreach (System.Data.DataTable table in results.Tables)
+                            {
+                                if (table.Columns.Count > 2)
+                                    MessageBox.Show("Из таблицы будут использоваться только первые две колонки.", "Предупреждение.");
+                                // Колонок в таблице должно быть не меньше двух.
+                                if (table.Columns.Count >= 2)
+                                {
+                                    foreach (DataRow row in table.Rows)
+                                    {
+                                        iterateThroughAllObjects(row[0].ToString(), row[1].ToString());
+                                    }
+                                }
+                                else
+                                    MessageBox.Show("В таблице меньше двух колонок.", "Ошибка!");
+                            }
                         }
+                        else
+                            MessageBox.Show("В файле .xls(x) должна быть одна твблица.", "Ошибка!");
                     }
-                    else
-                        MessageBox.Show("В файле .xls(x) должна быть одна твблица.", "Ошибка!");
                 }
             }
-            
+            catch (IOException e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
 
@@ -283,9 +296,9 @@ namespace PluginRename
         // Создание подсказки о файле таблицы Excel (если путь к нему очень длинный)
         private void createToolTip(Control controlForToolTip, string toolTipText)
         {
-            fileNameXlsToolTip.Active = true;
-            fileNameXlsToolTip.SetToolTip(controlForToolTip, toolTipText);
-            fileNameXlsToolTip.IsBalloon = true;
+            textFormToolTip.Active = true;
+            textFormToolTip.SetToolTip(controlForToolTip, toolTipText);
+            textFormToolTip.IsBalloon = true;
         }
 
 
