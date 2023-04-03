@@ -111,8 +111,17 @@ namespace MyAutoCADDll
 
             // получаем указатель на ленту AutoCAD
             Autodesk.Windows.RibbonControl rbCtrl = ComponentManager.Ribbon;
-            // добавляем на ленту вкладку
-            rbCtrl.Tabs.Add(rbTab);
+
+            RibbonTab isRbCtrl = rbCtrl.FindTab(rbTab.Id);
+            if (isRbCtrl != null)
+            {
+                isRbCtrl.Panels.Add(rbPanel);
+            }
+            else
+            {
+                // добавляем на ленту вкладку
+                rbCtrl.Tabs.Add(rbTab);
+            }
             // делаем созданную вкладку активной ("выбранной")
             //rbTab.IsActive = true;
         }
